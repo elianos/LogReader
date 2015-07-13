@@ -26,18 +26,18 @@ public class Log4jAppenderLoader {
     private static final Logger LOGGER = Logger.getLogger(Log4jAppenderLoader.class);
     private Map<String, LogFile> appenderMap = new HashMap<String, LogFile>();
 
-    Log4jAppenderLoader() {
-        Enumeration<Logger> loggers = LogManager.getCurrentLoggers();
-        LoggerRepository loggerRepository = LogManager.getLoggerRepository();
+    public Log4jAppenderLoader(LoggerRepository loggerRepository) {
+
+        Enumeration<Logger> loggers = loggerRepository.getCurrentLoggers();
+
 
         while (loggers.hasMoreElements()) {
             Logger logger = loggers.nextElement();
             readLogger(logger);
         }
 
-        Logger logger = LogManager.getRootLogger();
+        Logger logger = loggerRepository.getRootLogger();
         readLogger(logger);
-
 
     }
 

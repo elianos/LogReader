@@ -21,8 +21,9 @@ public class Tail {
         RandomAccessFile fileHandler = new RandomAccessFile(logFile, "r");
         long filePointer = 0;
         long fileLength = 0;
+        int i = 0;
 
-        while (true) {
+        while (i < 10) {
             fileLength = fileHandler.length();
             if (filePointer < fileLength) {
                 String line = fileHandler.readLine();
@@ -34,7 +35,6 @@ public class Tail {
                     writeLine(fileHandler.readLine());
                     filePointer = fileHandler.getFilePointer();
                 }
-                ;
             }
             synchronized (this) {
                 this.wait(1000);

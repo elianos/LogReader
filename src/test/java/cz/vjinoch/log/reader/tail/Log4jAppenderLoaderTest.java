@@ -2,6 +2,7 @@ package cz.vjinoch.log.reader.tail;
 
 import cz.vjinoch.log.reader.model.DatePattern;
 import cz.vjinoch.log.reader.model.LogFile;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
@@ -16,7 +17,7 @@ public class Log4jAppenderLoaderTest {
     @Test
     public void test() throws IOException, ParseException {
 
-        Log4jAppenderLoader log4jAppenderLoader = new Log4jAppenderLoader();
+        Log4jAppenderLoader log4jAppenderLoader = new Log4jAppenderLoader(LogManager.getLoggerRepository());
         Map<String, LogFile> appenderMap = log4jAppenderLoader.getAppenderMap();
 
         for (String appenderName : appenderMap.keySet()) {

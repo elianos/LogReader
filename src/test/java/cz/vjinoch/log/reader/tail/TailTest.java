@@ -12,7 +12,7 @@ public class TailTest {
     @Test
     public void handleTest() throws IOException, InterruptedException {
         Tail testFileTail = new Tail("d:\\Workspace\\LogReader\\src\\test\\resources\\testFile.txt");
-        testFileTail.mainLoop();
+//        testFileTail.mainLoop();
 
     }
 }

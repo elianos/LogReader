@@ -25,3 +25,18 @@ dependencies {
 
     testCompile 'junit:junit:4.11'
 }
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task dependencyCopy(type: Copy) {
+    into "$buildDir/libs/dependencies"
+    from configurations.runtime
+}
+
+
+artifacts {
+    archives sourcesJar
+}
