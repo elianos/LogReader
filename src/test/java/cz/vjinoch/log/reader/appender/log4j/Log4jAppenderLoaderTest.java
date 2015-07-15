@@ -1,4 +1,4 @@
-package cz.vjinoch.log.reader.tail;
+package cz.vjinoch.log.reader.appender.log4j;
 
 import cz.vjinoch.log.reader.model.DatePattern;
 import cz.vjinoch.log.reader.model.LogFile;

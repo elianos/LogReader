@@ -1,5 +1,6 @@
-package cz.vjinoch.log.reader.tail;
+package cz.vjinoch.log.reader.appender.log4j;
 
+import cz.vjinoch.log.reader.appender.IAppenderLoader;
 import cz.vjinoch.log.reader.model.DatePattern;
 import cz.vjinoch.log.reader.model.LogFile;
 import org.apache.commons.lang3.StringUtils;
@@ -18,10 +19,14 @@ import java.util.regex.Pattern;
  *
  * @author usul
  */
-public class Log4jAppenderLoader {
+public class Log4jAppenderLoader implements IAppenderLoader {
 
     public static final String PATTERN_PART_FIND_REGEX = "%(-){0,1}\\w*[cCFlLmMnprtxX](\\{.*\\}){0,1}";
     public static final String DATE_PATTERN_FIND_REGEX = "%d\\{([^}]+)\\}";
+    public static final String DATE_PATTERN_NO_FORMAT_REGEX = "%d";
+
+    public static final String DATE_PATTERN_DEFAULT_REPLACE = "%d{yyyy-MM-dd HH:mm:ss,SSS}";
+
     public static final String DATE_PATTERN_REPLACE_REGEX = "%d(\\{.*\\}){0,1}";
     private static final Logger LOGGER = Logger.getLogger(Log4jAppenderLoader.class);
     private Map<String, LogFile> appenderMap = new HashMap<String, LogFile>();
@@ -57,11 +62,30 @@ public class Log4jAppenderLoader {
 
         Pattern pattern = Pattern.compile(DATE_PATTERN_FIND_REGEX);
         Matcher matcher = pattern.matcher(logPatter);
+        String dateFormatter;
         if (!matcher.find()) {
-            LOGGER.error("Pattern neobsahuje vypis datumu!");
-            return null;
+            LOGGER.warn("Pattern neobsahuje vypis datumu!");
+
+            Pattern defPattern = Pattern.compile(DATE_PATTERN_NO_FORMAT_REGEX);
+            Matcher defMatcher = defPattern.matcher(logPatter);
+
+            if (StringUtils.countMatches(logPatter, DATE_PATTERN_NO_FORMAT_REGEX) == 0) {
+                LOGGER.warn("V patternu neexistuje datum bez specifikovaneho patteru.");
+                return null;
+            }
+
+            logPatter = StringUtils.replace(logPatter, DATE_PATTERN_NO_FORMAT_REGEX, DATE_PATTERN_DEFAULT_REPLACE);
+
+            LOGGER.info(logPatter);
+
+            matcher = pattern.matcher(logPatter);
+
+            matcher.find();
         }
-        String dateFormatter = matcher.group(1);
+
+        dateFormatter = matcher.group(1);
+
+
         LOGGER.debug("Byl nacten pattern pro datum: " + dateFormatter);
         String dateFormatPattern = dateFormatter.replaceAll("[GyYMwWDdFEuaHkKhmsSzZX]{1,}", "(.*)");
         dateFormatPattern = "(" + dateFormatPattern + ")";
